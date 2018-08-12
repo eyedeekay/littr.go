@@ -6,42 +6,36 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Start the build with an empty ACI
-acbuild --debug begin
-
-# In the event of the script exiting, end the build
-acbuildEnd() {
-    export EXIT=$?
-    acbuild --debug end && exit $EXIT
-}
-trap acbuildEnd EXIT
+# Start the build from alpine-os
+newcontainer=$(buildah --debug from quay.io/coreos/alpine-sh)
 
 __version=$(printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
-# Name the ACI
-acbuild --debug set-name littr.me/postgres
 
 # Based on alpine
-acbuild --debug dep add quay.io/coreos/alpine-sh
-
-acbuild --debug label add arch amd64
-acbuild --debug label add os linux
-acbuild --debug label add version "${__version}"
+buildah --debug config --arch amd64 ${newcontainer}
+buildah --debug config --os linux ${newcontainer}
 
 # Install postgres
-acbuild --debug run apk update
-acbuild --debug run apk add postgresql
+buildah --debug run ${newcontainer} -- apk update
+buildah --debug run ${newcontainer} -- apk add postgresql
 
-acbuild --debug set-user postgres
+buildah --debug copy ${newcontainer} ./postgres/run.sh /bin/run.sh
+buildah --debug copy ${newcontainer} ./postgres/postgresql.auto.conf /var/lib/postgres/
+buildah --debug copy ${newcontainer} ./postgres/postgresql.conf /var/lib/postgres/
 
-# Add a mount point for files to serve
-acbuild --debug mount add data /data
-acbuild --debug mount add sock /var/run/postgresql
+buildah --debug config --port 5432 ${newcontainer}
+buildah --debug config --entrypoint /bin/run.sh ${newcontainer}
+buildah --debug config --user postgres ${newcontainer}
 
-# Run postgres in the foreground
-acbuild --debug set-exec -- /usr/bin/postgres -D /data
+# Add a mount points
+buildah --debug config --volume data /var/lib/postgres/data
+buildah --debug config --volume sock /var/run/postgresql
 
-acbuild annotation add authors "Marius Orcsik <marius@littr.me>"
+buildah --debug config --created-by "Marius Orcsik <marius@littr.me>" ${newcontainer}
+buildah --debug config --author "lpbm" ${newcontainer}
 
-# Save the ACI
-acbuild --debug write --overwrite "littr-me-postgres-${__version}-linux-amd64.aci"
-
+image="littr-me-postgres-${__version}-linux-amd64"
+# Save the image
+buildah --debug inspect ${newcontainer}
+buildah --debug commit --rm --signature-policy ./insecureAcceptAnything.json --squash ${newcontainer} ${image}
+buildah --debug push --format oci --signature-policy ./insecureAcceptAnything.json "${image}" "oci-archive:./${image}.oci"

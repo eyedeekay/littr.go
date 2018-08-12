@@ -7,49 +7,44 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Start the build with an empty ACI
-acbuild --debug begin
-
-# In the event of the script exiting, end the build
-acbuildEnd() {
-    export EXIT=$?
-    acbuild --debug end && exit $EXIT
-}
-trap acbuildEnd EXIT
-
+# Start the build with an empty container
+newcontainer=$(buildah --debug from scratch)
 
 __version=$(printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
-# Name the ACI
-acbuild --debug set-name littr.me/app
 
 # Based on alpine
-acbuild --debug dep add quay.io/coreos/alpine-sh
-
-acbuild --debug label add arch amd64
-acbuild --debug label add os linux
-acbuild --debug label add version "${__version}"
+buildah --debug config --arch amd64 ${newcontainer}
+buildah --debug config --os linux ${newcontainer}
 
 IFS=$'\r\n'
 GLOBIGNORE='*'
-__env=($(<.env))
+__env=($(<../.env))
 for i in ${__env[@]}; do
     name=${i%=*}
     quot=${i#*=}
     value=${quot//\"}
-    acbuild environment add "${name}" "${value}"
+    buildah --debug config --env "${name}=${value}" ${newcontainer}
 done
 
-acbuild --debug copy littr /bin/app
-acbuild --debug copy-to-dir ./assets /assets
-acbuild --debug copy-to-dir ./templates /templates
-acbuild --debug set-exec /bin/app
+if [ test -x ../littr ]; then
+    cd .. && make littr && cd rkt/
+fi
+
+buildah --debug copy ${newcontainer} ../littr /bin/app
+buildah --debug copy ${newcontainer} ../assets /assets
+buildah --debug copy ${newcontainer} ../templates /templates
+buildah --debug config --entrypoint "/bin/app" ${newcontainer}
 
 # Add a port for http traffic over port 3000
-acbuild --debug port add www tcp 3000
+buildah --debug config --port 3000 ${newcontainer}
 
-acbuild --debug set-working-directory /
+buildah --debug config --workingdir / ${newcontainer}
 
-acbuild --debug annotation add authors "Marius Orcsik <marius@littr.me>"
+buildah --debug config --created-by "Marius Orcsik <marius@littr.me>" ${newcontainer}
+buildah --debug config --author "lpbm" ${newcontainer}
 
-# Save the ACI
-acbuild --debug write --overwrite "littr-me-app-${__version}-linux-amd64.aci"
+image="littr-me-app-${__version}-linux-amd64"
+# Save the image
+buildah --debug inspect ${newcontainer}
+buildah --debug commit --rm --signature-policy ./insecureAcceptAnything.json --squash ${newcontainer} ${image}
+buildah --debug push --format oci --signature-policy ./insecureAcceptAnything.json "${image}" "oci-archive:./${image}.oci"
