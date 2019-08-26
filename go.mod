@@ -4,6 +4,8 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0 // indirect
 	github.com/buger/jsonparser v0.0.0-20181023193515-52c6e1462ebd
 	github.com/captncraig/cors v0.0.0-20180620154129-376d45073b49 // indirect
+	github.com/eyedeekay/httptunnel v0.0.0-20190826041601-6d3fc41bec57 // indirect
+	github.com/eyedeekay/sam-forwarder v0.32.0 // indirect
 	github.com/gchaincl/dotsql v0.1.0
 	github.com/go-ap/activitypub v0.0.0-20190414191238-5b5a51daed61
 	github.com/go-ap/activitystreams v0.0.0-20190310091131-a516ad03a5be
@@ -27,15 +29,17 @@ require (
 	github.com/unrolled/render v0.0.0-20171102162132-65450fb6b2d3
 	github.com/writeas/go-nodeinfo v0.0.0-20180809171410-91102b12f3e1
 	github.com/writeas/go-webfinger v0.0.0-20190106002315-85cf805c86d2 // indirect
+	github.com/zserge/webview v0.0.0-20190123072648-16c93bcaeaeb // indirect
 	gitlab.com/golang-commonmark/html v0.0.0-20180917080848-cfaf75183c4a // indirect
 	gitlab.com/golang-commonmark/linkify v0.0.0-20180917065525-c22b7bdb1179 // indirect
 	gitlab.com/golang-commonmark/markdown v0.0.0-20181102083822-772775880e1f
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20180912090424-e5bce34c34f2 // indirect
 	gitlab.com/golang-commonmark/puny v0.0.0-20180912090636-2cd490539afe // indirect
-	golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b
-	golang.org/x/net v0.0.0-20190110044637-be1c187aa6c6 // indirect
+	golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586
 	golang.org/x/oauth2 v0.0.0-20180620175406-ef147856a6dd
-	golang.org/x/text v0.3.0
-	golang.org/x/xerrors v0.0.0-20190208160001-334af843aad9
+	golang.org/x/sys v0.0.0-20190825160603-fb81701db80f // indirect
+	golang.org/x/text v0.3.2
+	golang.org/x/tools v0.0.0-20190825031127-d72b05d2b1b6 // indirect
+	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
 	mellium.im/sasl v0.2.1 // indirect
 )

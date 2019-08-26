@@ -7,6 +7,7 @@ import (
 	"github.com/mariusor/littr.go/app/oauth"
 	"github.com/writeas/go-nodeinfo"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -18,24 +19,72 @@ import (
 	"github.com/mariusor/littr.go/app/api"
 	"github.com/mariusor/littr.go/app/frontend"
 	"github.com/mariusor/littr.go/internal/log"
+
+	"github.com/eyedeekay/httptunnel"
+	"github.com/eyedeekay/sam-forwarder/config"
+	"github.com/eyedeekay/sam-forwarder/tcp"
 )
 
 var version = "HEAD"
 
 const defaultPort = 3000
 const defaultTimeout = time.Second * 15
+const defaultI2P = "false"
 
 func main() {
 	var wait time.Duration
 	var port int
 	var host string
+	var i2p string
 	var env string
+	var sam *samforwarder.SAMForwarder
+	var samc *i2phttpproxy.SAMHTTPProxy
+	var err error
 
 	flag.DurationVar(&wait, "graceful-timeout", defaultTimeout, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.IntVar(&port, "port", defaultPort, "the port on which we should listen on")
 	flag.StringVar(&host, "host", "", "the host on which we should listen on")
 	flag.StringVar(&env, "env", "unknown", "the environment type")
+	flag.StringVar(&i2p, "i2p", defaultI2P, "use i2p, may be true, false, config file path")
 	flag.Parse()
+
+	switch i2p {
+	case "false", "no", "":
+	case "true", "yes":
+		sam, err = samforwarder.NewSAMForwarderFromOptions(
+			samforwarder.SetHost(host),
+			samforwarder.SetPort(strconv.Itoa(port)),
+			samforwarder.SetSaveFile(true),
+		)
+		if err != nil {
+			app.Instance.Logger.Error(err.Error())
+		}
+		samc, err = i2phttpproxy.NewHttpProxy(
+			i2phttpproxy.SetControlHost("127.0.0.1"),
+			i2phttpproxy.SetControlPort("47951"),
+			i2phttpproxy.SetProxyHost("127.0.0.1"),
+			i2phttpproxy.SetProxyPort("47950"),
+		)
+		if err != nil {
+			app.Instance.Logger.Error(err.Error())
+		}
+	default:
+		sam, err = i2ptunconf.NewSAMForwarderFromConfig(i2p, "127.0.0.1", "7656")
+		if err != nil {
+			app.Instance.Logger.Error(err.Error())
+		}
+		samc, err = i2ptunconf.NewSAMHTTPClientFromConfig(i2p, "127.0.0.1", "7656")
+		if err != nil {
+			app.Instance.Logger.Error(err.Error())
+		}
+	}
+	if sam != nil && samc != nil {
+		go samc.Serve()
+		samc.SetupProxy()
+		i2phttpproxy.UnProxyLocal()
+		go sam.Serve()
+		host = sam.Base32()
+	}
 
 	e := app.EnvType(env)
 	app.Instance = app.New(host, port, e, version)
