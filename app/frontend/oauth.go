@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func redirectOrOutput (rs *osin.Response, w http.ResponseWriter, r *http.Request, h *handler) {
+func redirectOrOutput(rs *osin.Response, w http.ResponseWriter, r *http.Request, h *handler) {
 	// Add headers
 	for i, k := range rs.Headers {
 		for _, v := range k {
@@ -75,4 +75,3 @@ func (h *handler) Token(w http.ResponseWriter, r *http.Request) {
 	}
 	redirectOrOutput(resp, w, r, h)
 }
-

@@ -92,10 +92,10 @@ type objectVal struct {
 }
 
 var (
-	apiURL    = os.Getenv("API_URL")
-	host      = os.Getenv("HOSTNAME")
-	o         *pg.Options
-	r         *pg.Options
+	apiURL = os.Getenv("API_URL")
+	host   = os.Getenv("HOSTNAME")
+	o      *pg.Options
+	r      *pg.Options
 )
 
 const testActorHash = "f00f00f00f00f00f00f00f00f00f6667"
@@ -146,8 +146,8 @@ func runAPP(lvl log.Level) {
 
 	oauth2, _ := osinServer(db.Config.DB)
 	a := api.Init(api.Config{
-		Logger:  app.Instance.Logger.New(log.Ctx{"package": "api"}),
-		BaseURL: app.Instance.APIURL,
+		Logger:      app.Instance.Logger.New(log.Ctx{"package": "api"}),
+		BaseURL:     app.Instance.APIURL,
 		OAuthServer: oauth2,
 	})
 

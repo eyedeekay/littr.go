@@ -53,7 +53,7 @@ bin/fetcher: go.mod cli/fetcher/main.go $(APPSOURCES)
 cli: bootstrap votes keys
 
 run: app
-	@./bin/app
+	@./bin/app -port 3002 -i2p true 2>&1 | tee log
 
 clean:
 	-$(RM) bin/*

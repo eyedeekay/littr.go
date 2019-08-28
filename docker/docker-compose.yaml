@@ -108,4 +108,4 @@ services:
         ENV: ${ENV}
         LISTEN: ${LISTEN}
         HOSTNAME: ${HOSTNAME}
-    command: app -host ${HOSTNAME} -port ${PORT} -env ${ENV}
+    command: app -host ${HOSTNAME} -port ${PORT} -i2p ${I2P}-env ${ENV}

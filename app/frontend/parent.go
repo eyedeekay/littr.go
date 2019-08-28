@@ -1,8 +1,8 @@
 package frontend
 
 import (
-	"github.com/mariusor/littr.go/internal/errors"
 	"github.com/mariusor/littr.go/app"
+	"github.com/mariusor/littr.go/internal/errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -17,7 +17,7 @@ func (h *handler) HandleItemRedirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p, err := itemLoader.LoadItem(app.Filters{
-		LoadItemsFilter:app.LoadItemsFilter{
+		LoadItemsFilter: app.LoadItemsFilter{
 			Key: app.Hashes{app.Hash(chi.URLParam(r, "hash"))},
 		},
 		MaxItems: 1,

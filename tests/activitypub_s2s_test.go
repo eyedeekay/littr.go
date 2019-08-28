@@ -11,9 +11,9 @@ import (
 )
 
 var littrAcct = testAccount{
-	id:         "https://littr.me/api/self/following/64e55785250f59637e7f578167e2c112",
-	Hash:       "64e55785250f59637e7f578167e2c112",
-	Handle:     "0lpbm",
+	id:     "https://littr.me/api/self/following/64e55785250f59637e7f578167e2c112",
+	Hash:   "64e55785250f59637e7f578167e2c112",
+	Handle: "0lpbm",
 }
 
 var S2STests = testPairs{
@@ -41,7 +41,7 @@ var S2STests = testPairs{
  "type": "Like",
  "actor": "%s",
  "object": "%s/self/following/dc6f5f5bf55bc1073715c98c69fa7ca8/outbox/162edb32c80d0e6dd3114fbb59d6273b/object"
-}`,  littrAcct.id, apiURL),
+}`, littrAcct.id, apiURL),
 		},
 		res: testRes{
 			code: http.StatusCreated,
@@ -63,7 +63,7 @@ var S2STests = testPairs{
 }
 }`, littrAcct.id, apiURL, apiURL),
 		},
-		res: testRes {
+		res: testRes{
 			code: http.StatusForbidden, // Not sure why this fails
 		},
 	}},
@@ -82,7 +82,7 @@ func Test_S2SRequests(t *testing.T) {
 	if prv64 == "" {
 		t.Skipf("Unable to load private key from env")
 	}
-	var lprvblock, _ = pem.Decode([]byte("-----BEGIN PRIVATE KEY-----\n"+prv64+"\n-----END PRIVATE KEY-----"))
+	var lprvblock, _ = pem.Decode([]byte("-----BEGIN PRIVATE KEY-----\n" + prv64 + "\n-----END PRIVATE KEY-----"))
 	if lprvblock == nil {
 		t.Skipf("Unable to load private key")
 	}
@@ -92,6 +92,6 @@ func Test_S2SRequests(t *testing.T) {
 	}
 
 	littrAcct.privateKey = lprv.(*rsa.PrivateKey)
-	littrAcct.publicKey =  lpub.(*rsa.PublicKey)
+	littrAcct.publicKey = lpub.(*rsa.PublicKey)
 	testSuite(t, S2STests)
 }

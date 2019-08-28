@@ -114,10 +114,10 @@ func (r *repository) WithAccount(a *app.Account) error {
 	}
 	if len(a.Metadata.OAuth.Token) > 0 {
 		o.tok = &oauth2.Token{
-			AccessToken: a.Metadata.OAuth.Token,
-			TokenType: a.Metadata.OAuth.TokenType,
+			AccessToken:  a.Metadata.OAuth.Token,
+			TokenType:    a.Metadata.OAuth.TokenType,
 			RefreshToken: a.Metadata.OAuth.RefreshToken,
-			Expiry: a.Metadata.OAuth.Expiry,
+			Expiry:       a.Metadata.OAuth.Expiry,
 		}
 	}
 	r.client.SignFn(o.Sign)

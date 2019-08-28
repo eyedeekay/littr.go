@@ -3,8 +3,8 @@ package queue
 import (
 	"database/sql"
 	"github.com/go-pg/pg"
-	"github.com/mariusor/littr.go/internal/errors"
 	"github.com/mariusor/littr.go/app"
+	"github.com/mariusor/littr.go/internal/errors"
 )
 
 type FetchQueue struct {

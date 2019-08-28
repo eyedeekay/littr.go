@@ -187,7 +187,7 @@ func (h *handler) ShowItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	handle := chi.URLParam(r, "handle")
-	auth, err := acctLoader.LoadAccount(app.Filters{ LoadAccountsFilter: app.LoadAccountsFilter{
+	auth, err := acctLoader.LoadAccount(app.Filters{LoadAccountsFilter: app.LoadAccountsFilter{
 		Handle: []string{handle},
 	}})
 	itemLoader, ok := app.ContextItemLoader(r.Context())
@@ -199,7 +199,7 @@ func (h *handler) ShowItem(w http.ResponseWriter, r *http.Request) {
 	hash := chi.URLParam(r, "hash")
 	f := app.Filters{
 		LoadItemsFilter: app.LoadItemsFilter{
-			Key:          app.Hashes{app.Hash(hash)},
+			Key: app.Hashes{app.Hash(hash)},
 		},
 	}
 	if auth.Hash.String() != app.AnonymousHash.String() {
@@ -246,7 +246,7 @@ func (h *handler) ShowItem(w http.ResponseWriter, r *http.Request) {
 
 	filter := app.Filters{
 		LoadItemsFilter: app.LoadItemsFilter{
-			Depth:    10,
+			Depth: 10,
 		},
 		MaxItems: MaxContentItems,
 		Page:     1,
@@ -281,7 +281,7 @@ func (h *handler) ShowItem(w http.ResponseWriter, r *http.Request) {
 					AttributedTo: []app.Hash{h.account.Hash},
 					ItemKey:      allComments.getItemsHashes(),
 				},
-				MaxItems:     MaxContentItems,
+				MaxItems: MaxContentItems,
 			})
 			if err != nil {
 				h.logger.Error(err.Error())
@@ -328,7 +328,7 @@ func (h *handler) HandleSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	saveVote := true
 	if len(n.Hash) > 0 {
-		if p, err := itemLoader.LoadItem(app.Filters{ LoadItemsFilter: app.LoadItemsFilter{Key: app.Hashes{n.Hash}}}); err == nil {
+		if p, err := itemLoader.LoadItem(app.Filters{LoadItemsFilter: app.LoadItemsFilter{Key: app.Hashes{n.Hash}}}); err == nil {
 			n.Title = p.Title
 		}
 		saveVote = false
@@ -391,7 +391,7 @@ func (h *handler) HandleDelete(w http.ResponseWriter, r *http.Request) {
 		h.logger.Error("could not load item repository from Context")
 		return
 	}
-	p, err := itemLoader.LoadItem(app.Filters{ LoadItemsFilter: app.LoadItemsFilter{Key: app.Hashes{app.Hash(hash)}}})
+	p, err := itemLoader.LoadItem(app.Filters{LoadItemsFilter: app.LoadItemsFilter{Key: app.Hashes{app.Hash(hash)}}})
 	if err != nil {
 		h.logger.Error(err.Error())
 		h.HandleErrors(w, r, errors.NewNotFound(err, "not found"))

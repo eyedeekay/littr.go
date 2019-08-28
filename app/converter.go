@@ -391,7 +391,7 @@ func (v *Vote) FromActivityPub(it as.Item) error {
 	case as.LikeType:
 		fallthrough
 	case as.DislikeType:
-		fromAct := func (act ap.Activity, v *Vote) {
+		fromAct := func(act ap.Activity, v *Vote) {
 			on := Item{}
 			on.FromActivityPub(act.Object)
 			v.Item = &on

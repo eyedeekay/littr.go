@@ -18,6 +18,7 @@ type StackElement struct {
 	Callee string `json:"calee,omitempty"`
 	Addr   int64  `json:"address,omitempty"`
 }
+
 // Stack is an array of stack elements representing the parsed relevant bits of a backtrace
 // Relevant in this context means, it strips the calls that are happening in the package
 type Stack []StackElement

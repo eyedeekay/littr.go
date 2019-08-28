@@ -22,7 +22,7 @@ func (h handler) Routes() func(chi.Router) {
 			r.With(h.ItemCollectionCtxt).Get("/object/replies", h.HandleCollection)
 		})
 	}
-	actorsRouter := func (r chi.Router) {
+	actorsRouter := func(r chi.Router) {
 		r.With(LoadFiltersCtxt(h.HandleError), h.ItemCollectionCtxt).Get("/", h.HandleCollection)
 		r.Route("/{handle}", func(r chi.Router) {
 			r.Use(h.AccountCtxt)

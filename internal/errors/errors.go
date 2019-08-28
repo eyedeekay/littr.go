@@ -66,7 +66,7 @@ func (e Err) Unwrap() error {
 
 func Details(e error) error {
 	if x, ok := e.(wrapper); ok {
-		return  x.Unwrap()
+		return x.Unwrap()
 	}
 	return nil
 }
@@ -214,7 +214,7 @@ func IsNotValid(e error) bool {
 	return xerr.Is(e, notValid{})
 }
 
-func isA (err1, err2 error) bool {
+func isA(err1, err2 error) bool {
 	return reflect.TypeOf(err1) == reflect.TypeOf(err2)
 }
 func (n notFound) Is(e error) bool {

@@ -149,13 +149,13 @@ func pageLink(p int) template.HTML {
 // HandleIndex serves / request
 func (h *handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	filter := app.Filters{
-		LoadItemsFilter:app.LoadItemsFilter{
+		LoadItemsFilter: app.LoadItemsFilter{
 			Context:   []string{"0"},
 			Federated: []bool{false},
 			Deleted:   []bool{false},
 		},
-		Page:      1,
-		MaxItems:  MaxContentItems,
+		Page:     1,
+		MaxItems: MaxContentItems,
 	}
 	if err := qstring.Unmarshal(r.URL.Query(), &filter); err != nil {
 		h.logger.Debug("unable to load url parameters")
@@ -214,7 +214,7 @@ func loadItems(c context.Context, filter app.Filters, acc *app.Account, l log.Lo
 					AttributedTo: []app.Hash{acc.Hash},
 					ItemKey:      m.Items.getItemsHashes(),
 				},
-				MaxItems:     MaxContentItems,
+				MaxItems: MaxContentItems,
 			})
 			if err != nil {
 				l.Error(err.Error())
@@ -262,7 +262,7 @@ func (h *handler) HandleDomains(w http.ResponseWriter, r *http.Request) {
 
 	filter := app.Filters{
 		LoadItemsFilter: app.LoadItemsFilter{
-			Context:  []string{"0"},
+			Context: []string{"0"},
 		},
 		MaxItems: MaxContentItems,
 		Page:     1,

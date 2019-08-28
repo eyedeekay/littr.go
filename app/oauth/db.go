@@ -148,7 +148,7 @@ func (s *Storage) SaveAuthorize(data *osin.AuthorizeData) (err error) {
 		extra,
 	}
 
-	if _, err = s.db.Query(nil, "INSERT INTO authorize (client, code, expires_in, scope, redirect_uri, state, created_at, extra) " +
+	if _, err = s.db.Query(nil, "INSERT INTO authorize (client, code, expires_in, scope, redirect_uri, state, created_at, extra) "+
 		"VALUES (?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7)", params...); err != nil {
 		s.l.WithContext(log.Ctx{"id": data.Client.GetId(), "table": "authorize", "operation": "insert", "code": data.Code}).Error(err.Error())
 		return errors.Annotate(err, "")
@@ -209,7 +209,7 @@ func (s *Storage) RemoveAuthorize(code string) (err error) {
 		s.l.WithContext(log.Ctx{"code": code, "table": "authorize", "operation": "delete"}).Error(err.Error())
 		return errors.Annotate(err, "")
 	}
-	s.l.WithContext(log.Ctx{"code": code, }).Debugf("removed authorization token")
+	s.l.WithContext(log.Ctx{"code": code}).Debugf("removed authorization token")
 	return nil
 }
 
@@ -305,7 +305,7 @@ func (s *Storage) LoadAccess(code string) (*osin.AccessData, error) {
 	result.UserData = acc.Extra
 	client, err := s.GetClient(acc.Client)
 	if err != nil {
-		s.l.WithContext(log.Ctx{"code": code, "table": "access", "operation": "select",}).Error(err.Error())
+		s.l.WithContext(log.Ctx{"code": code, "table": "access", "operation": "select"}).Error(err.Error())
 		return nil, err
 	}
 

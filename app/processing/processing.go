@@ -3,8 +3,8 @@ package processing
 
 import (
 	as "github.com/go-ap/activitystreams"
-	"github.com/mariusor/littr.go/internal/errors"
 	"github.com/mariusor/littr.go/app"
+	"github.com/mariusor/littr.go/internal/errors"
 	"github.com/mariusor/littr.go/internal/log"
 )
 
@@ -173,7 +173,7 @@ type Message struct {
 	Actions  []interface{} `json:"actions"`
 }
 
-var DefaultQueue interface{} = nil//*redismq.Queue
+var DefaultQueue interface{} = nil //*redismq.Queue
 
 func InitQueues(app *app.Application) error {
 	redisDb := 0

@@ -107,6 +107,7 @@ type Application struct {
 	APIURL   string
 	BaseURL  string
 	Port     int
+	I2P      string
 	listen   string
 	Secure   bool
 	Config   Config
@@ -250,6 +251,7 @@ func loadEnv(l *Application) (bool, error) {
 		l.BaseURL = fmt.Sprintf("http://%s", l.HostName)
 	}
 
+	l.I2P = os.Getenv("I2P")
 	l.Config.DB.Host = os.Getenv("DB_HOST")
 	l.Config.DB.Pw = os.Getenv("DB_PASSWORD")
 	l.Config.DB.Name = os.Getenv("DB_NAME")
@@ -284,7 +286,7 @@ func (a *Application) Run(m http.Handler, wait time.Duration) {
 		"env":    a.Config.Env,
 	}).Info("Started")
 	srv := &http.Server{
-		Addr: a.Listen(),
+		Addr:         a.Listen(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
